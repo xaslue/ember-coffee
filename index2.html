@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17130f">
+<title>EMBER — кофе, который остаётся с тобой</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#17130f;--paper:#eee7dc;--muted:#b5a99a;--orange:#d9824b;--line:rgba(238,231,220,.15);--serif:Georgia,serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--paper);font-family:"DM Sans",sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}button{font:inherit}.grain{position:fixed;inset:0;pointer-events:none;z-index:5;opacity:.075;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}
+nav{height:82px;padding:0 6vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:absolute;top:0;width:100%;z-index:10}.logo{font:800 22px Manrope;letter-spacing:.18em}.logo span{color:var(--orange)}.navlinks{display:flex;gap:34px;color:#c8bcae;font-size:12px;letter-spacing:.1em;text-transform:uppercase}.nav-cta{border:1px solid #9e7256;padding:12px 19px;border-radius:99px;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.hero{min-height:820px;height:100svh;max-height:1050px;position:relative;display:flex;align-items:center;padding:110px 9vw 60px;overflow:hidden;background:radial-gradient(ellipse at 66% 52%,#493020 0%,#2a2018 30%,#17130f 68%)}.hero:after{content:"";position:absolute;width:620px;height:620px;border:1px solid #a86b4630;border-radius:50%;right:9%;top:15%;box-shadow:0 0 0 70px #a86b4609,0 0 0 140px #a86b4607}.hero-copy{position:relative;z-index:2;width:48%;max-width:610px}.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:12px}.eyebrow:before{content:"";width:30px;height:1px;background:var(--orange)}h1{font:500 clamp(58px,7vw,108px)/.98 Manrope;letter-spacing:-.075em;margin:27px 0 25px}h1 em{font:italic 500 1.02em var(--serif);color:#d68b5b;letter-spacing:-.07em}.hero-copy p{max-width:400px;color:#bdb0a2;font-size:15px;line-height:1.8;margin:0 0 34px}.primary{display:inline-flex;align-items:center;gap:28px;padding:17px 22px;background:var(--orange);color:#21150e;border-radius:3px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;transition:.25s}.primary:hover{background:#f0a16d;transform:translateY(-3px)}.primary b{font-size:18px;font-weight:400}.hero-note{margin-top:55px;color:#84796d;font-size:10px;letter-spacing:.18em;text-transform:uppercase}.hero-note span{color:#d8c9b9;margin-right:12px}
+#scene{position:absolute;inset:0 0 0 39%;z-index:1;pointer-events:none;overflow:hidden}
+#scene canvas{display:block;width:100%;height:100%;position:relative;z-index:2}
+.cup-fallback{position:absolute;z-index:1;left:50%;top:52%;width:340px;height:390px;transform:translate(-50%,-50%);filter:drop-shadow(0 35px 30px #08050399);transition:opacity .4s}
+.cup-fallback .saucer{position:absolute;left:7%;bottom:4%;width:86%;height:48px;border-radius:50%;background:linear-gradient(180deg,#f2e9dc,#b9a895 48%,#756454 72%,#d9cbbb);box-shadow:0 12px 24px #08050388}
+.cup-fallback .saucer:after{content:"";position:absolute;inset:8px 12px;border:2px solid #8d7b68;border-radius:50%}
+.cup-fallback .body{position:absolute;left:19%;top:23%;width:62%;height:58%;background:linear-gradient(90deg,#75685b 0%,#eee5d8 18%,#fff8ed 48%,#c8b9a6 82%,#76695d 100%);clip-path:polygon(5% 0,95% 0,82% 100%,18% 100%);border-radius:0 0 25% 25%;box-shadow:inset 12px 0 20px #fff8}
+.cup-fallback .top{position:absolute;left:19%;top:19%;width:62%;height:38px;border-radius:50%;background:linear-gradient(180deg,#fff8ed,#b5a592);z-index:3}
+.cup-fallback .coffee{position:absolute;left:22%;top:21%;width:56%;height:25px;border-radius:50%;background:radial-gradient(ellipse at 40% 30%,#9a6039,#3a1b0e 70%);z-index:4;box-shadow:inset 0 3px 4px #d59b6a66}
+.cup-fallback .handle{position:absolute;right:2%;top:35%;width:95px;height:125px;border:20px solid #d9cbbb;border-left-color:#a99a87;border-radius:50%;z-index:0;box-shadow:inset -5px 0 8px #fff8}
+.cup-fallback .steam{position:absolute;top:0;left:42%;width:18px;height:78px;border-left:3px solid #e9d5c2;border-radius:50%;transform:rotate(12deg);opacity:.35;filter:blur(2px)}
+.cup-fallback .steam.two{left:55%;top:10px;transform:rotate(-10deg);height:58px}
+@media(max-width:760px){.cup-fallback{width:260px;height:300px;top:54%;left:52%}}.hero-meta{position:absolute;right:6vw;bottom:55px;z-index:2;text-align:right;color:#9f9284;font-size:10px;letter-spacing:.18em;text-transform:uppercase;line-height:2}.hero-meta strong{display:block;color:#e2d5c7;font-size:13px;font-weight:500}
+.scroll{position:absolute;left:6vw;bottom:45px;color:#81766a;font-size:9px;letter-spacing:.2em;text-transform:uppercase;display:flex;gap:14px;align-items:center;z-index:2}.scroll:before{content:"";height:1px;width:38px;background:var(--orange)}
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;overflow:hidden;white-space:nowrap;color:#9b8d7e;font:italic 22px var(--serif);letter-spacing:.04em}.marquee span{color:var(--orange);padding:0 28px}
+.story{padding:150px 9vw 145px;display:grid;grid-template-columns:1fr 1fr;gap:8vw;align-items:center;min-height:680px}.story-kicker{color:var(--orange);font-size:10px;letter-spacing:.22em;text-transform:uppercase}.story h2,.section-head h2{font:500 clamp(42px,5vw,68px)/1.05 Manrope;letter-spacing:-.06em;margin:22px 0}.story h2 em,.section-head h2 em{font:italic 500 1em var(--serif);color:#d68b5b}.story p{color:#a99d90;line-height:1.9;font-size:14px;max-width:440px}.story-visual{height:420px;position:relative;background:radial-gradient(ellipse,#6e442d 0%,#33241a 40%,#1d1712 72%);display:grid;place-items:center;overflow:hidden}.story-visual:before,.story-visual:after{content:"";position:absolute;border:1px solid #c18a6240;border-radius:50%;width:300px;height:300px}.story-visual:after{width:420px;height:420px}.bean{position:absolute;width:72px;height:112px;border-radius:50%;background:linear-gradient(110deg,#1c100b,#70432b 45%,#24130c);transform:rotate(35deg);box-shadow:inset 5px 0 8px #a66a3b55,0 15px 30px #0008}.bean:after{content:"";position:absolute;left:50%;top:5%;height:90%;width:2px;background:#1a0d08;transform:rotate(7deg);border-radius:50%}.bean.one{left:20%;top:22%;transform:rotate(-32deg) scale(.7)}.bean.two{right:17%;bottom:16%;transform:rotate(55deg) scale(1.1)}.story-stamp{position:relative;z-index:1;width:175px;height:175px;border:1px solid #d58b5d;border-radius:50%;display:grid;place-items:center;text-align:center;color:#e9c6a8;font:italic 24px var(--serif);transform:rotate(-12deg)}
+.features{padding:110px 9vw 135px;background:#eee7dc;color:#211a14}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:55px}.section-head .story-kicker{color:#a75d35}.section-head h2{margin-bottom:0}.section-head p{max-width:260px;color:#76695e;font-size:13px;line-height:1.7}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{border-top:1px solid #b7a99a;padding:25px 24px 30px;min-height:260px;position:relative}.feature-num{font:italic 16px var(--serif);color:#b36d43}.feature-icon{height:74px;display:flex;align-items:center;color:#a75d35;font-size:33px}.feature h3{font:600 19px Manrope;margin:8px 0}.feature p{color:#76695e;font-size:13px;line-height:1.7;max-width:290px}
+.menu{padding:140px 9vw}.menu .section-head{margin-bottom:65px}.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 8vw}.drink{display:flex;justify-content:space-between;align-items:center;padding:25px 0;border-bottom:1px solid var(--line)}.drink h3{font:500 19px Manrope;margin:0 0 7px}.drink p{margin:0;color:#8f8377;font-size:12px}.price{font:italic 20px var(--serif);color:#d68b5b}
+.visit{margin:0 6vw 90px;padding:80px 8vw;background:linear-gradient(110deg,#493020,#241a13 70%);display:flex;align-items:center;justify-content:space-between;gap:30px;position:relative;overflow:hidden}.visit:after{content:"";position:absolute;width:330px;height:330px;border:1px solid #d58b5d55;border-radius:50%;right:20%;top:-45%}.visit h2{font:500 clamp(38px,5vw,62px)/1.05 Manrope;letter-spacing:-.06em;margin:15px 0}.visit p{color:#b7a99b;font-size:13px;line-height:1.8;max-width:390px}.visit .primary{position:relative;z-index:1;white-space:nowrap}
+footer{padding:35px 6vw 45px;display:flex;justify-content:space-between;align-items:center;color:#81766a;font-size:11px;border-top:1px solid var(--line)}footer .logo{color:var(--paper)}footer a{color:#c5b6a7}
+@media(max-width:760px){nav{height:70px;padding:0 6vw}.navlinks{display:none}.hero{min-height:780px;height:100svh;align-items:flex-start;padding:145px 7vw 60px}.hero-copy{width:100%;max-width:520px}.hero h1{font-size:clamp(58px,16vw,90px)}.hero-copy p{max-width:310px;font-size:13px}#scene{inset:30% -20% 0 15%;opacity:.78}.hero:after{right:-35%;top:32%;width:480px;height:480px}.hero-meta{right:7vw;bottom:35px}.scroll{display:none}.hero-note{margin-top:30px}.story{padding:90px 7vw;grid-template-columns:1fr;gap:45px}.story-visual{height:300px}.features,.menu{padding:90px 7vw}.section-head{display:block}.section-head p{margin-top:20px}.cards{grid-template-columns:1fr}.feature{min-height:0;padding:22px 8px}.feature-icon{height:55px}.menu-grid{grid-template-columns:1fr}.visit{margin:0 4vw 60px;padding:55px 7vw;display:block}.visit .primary{margin-top:20px}footer{padding:30px 7vw;gap:20px;flex-wrap:wrap}footer .logo{width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<nav><a class="logo" href="#">EM<span>B</span>ER.</a><div class="navlinks"><a href="#story">Философия</a><a href="#menu">Меню</a><a href="#visit">Контакты</a></div><a class="nav-cta" href="#menu">Наше меню ↗</a></nav>
+<header class="hero" id="top">
+  <div class="hero-copy">
+    <div class="eyebrow">Coffee · slow mornings · good people</div>
+    <h1>Вкус<br>быть <em>здесь.</em></h1>
+    <p>Кофе, который не нужно пить на бегу. Заходи за любимым вкусом, оставайся ради момента.</p>
+    <a class="primary" href="#menu">Открыть меню <b>↗</b></a>
+    <div class="hero-note"><span>●</span> Обжариваем с вниманием. Готовим с душой.</div>
+  </div>
+  <div id="scene" aria-label="3D чашка кофе">
+    <div class="cup-fallback" aria-hidden="true">
+      <div class="steam"></div><div class="steam two"></div>
+      <div class="handle"></div><div class="body"></div>
+      <div class="top"></div><div class="coffee"></div><div class="saucer"></div>
+    </div>
+  </div>
+  <div class="scroll">Листай, чтобы почувствовать</div>
+  <div class="hero-meta"><strong>Свежая обжарка</strong>Каждый день · с самого утра</div>
+</header>
+<div class="marquee">A little pause, a better day <span>✳</span> Кофе с характером <span>✳</span> Stay for a while <span>✳</span> A little pause, a better day <span>✳</span></div>
+<section class="story" id="story">
+ <div><div class="story-kicker">01 / Наша философия</div><h2>Не просто кофе.<br><em>Твой момент.</em></h2><p>EMBER — небольшая кофейня для тех, кто ценит вкус, детали и неторопливые разговоры. Мы выбираем выразительные зёрна, бережно раскрываем их вкус и не торопим ни тебя, ни кофе.</p><p>Здесь можно начать день, перевести дыхание между делами или задержаться чуть дольше обычного.</p></div>
+ <div class="story-visual"><div class="bean one"></div><div class="bean two"></div><div class="story-stamp">made with<br>☕<br>intention</div></div>
+</section>
+<section class="features">
+ <div class="section-head"><div><div class="story-kicker">02 / Что внутри</div><h2>Маленькие вещи.<br><em>Большая разница.</em></h2></div><p>Вкус начинается задолго до первой чашки — с выбора зерна и внимания к деталям.</p></div>
+ <div class="cards">
+  <article class="feature"><div class="feature-num">01</div><div class="feature-icon">◉</div><h3>Зёрна с историей</h3><p>Подбираем кофе с интересным происхождением и характером, чтобы в каждой чашке было что открыть.</p></article>
+  <article class="feature"><div class="feature-num">02</div><div class="feature-icon">⌁</div><h3>Точность в каждом шоте</h3><p>Настраиваем помол и экстракцию, чтобы сохранить баланс сладости, кислотности и тела.</p></article>
+  <article class="feature"><div class="feature-num">03</div><div class="feature-icon">✳</div><h3>Место для паузы</h3><p>Тёплый свет, спокойная музыка и дружелюбные люди. Не обязательно куда-то спешить.</p></article>
+ </div>
+</section>
+<section class="menu" id="menu">
+ <div class="section-head"><div><div class="story-kicker">03 / Выбери настроение</div><h2>Меню <em>на каждый день.</em></h2></div><p>Несколько знакомых фаворитов и поводы попробовать что-то новое.</p></div>
+ <div class="menu-grid">
+  <div>
+   <div class="drink"><div><h3>Эспрессо</h3><p>Плотный, короткий, выразительный</p></div><div class="price">от  [цена]</div></div>
+   <div class="drink"><div><h3>Американо</h3><p>Чистый вкус и мягкое послевкусие</p></div><div class="price">от  [цена]</div></div>
+   <div class="drink"><div><h3>Капучино</h3><p>Эспрессо и бархатная молочная текстура</p></div><div class="price">от  [цена]</div></div>
+  </div><div>
+   <div class="drink"><div><h3>Флэт уайт</h3><p>Больше кофе, меньше молока</p></div><div class="price">от  [цена]</div></div>
+   <div class="drink"><div><h3>Латте</h3><p>Нежный, сливочный, уютный</p></div><div class="price">от  [цена]</div></div>
+   <div class="drink"><div><h3>Фильтр дня</h3><p>Меняющийся вкус и новое открытие</p></div><div class="price">от  [цена]</div></div>
+  </div>
+ </div>
+</section>
+<section class="visit" id="visit"><div><div class="story-kicker">04 / Заглядывай в гости</div><h2>Твой столик<br><em>уже ждёт.</em></h2><p>Будем рады видеть тебя. Добавь сюда адрес кофейни, часы работы и ссылку на карту — и гости легко найдут дорогу.</p></div><a class="primary" href="https://maps.google.com" target="_blank" rel="noreferrer">Как нас найти <b>↗</b></a></section>
+<footer><a class="logo" href="#">EM<span style="color:var(--orange)">B</span>ER.</a><span>© 2026 EMBER COFFEE</span><a href="https://instagram.com" target="_blank" rel="noreferrer">INSTAGRAM ↗</a></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(()=>{
+ const host=document.getElementById('scene');
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(!window.THREE||!host)return;
+ let renderer,scene,camera,cup,raf,alive=true;
+ try{
+  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(host.clientWidth,host.clientHeight);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;
+  host.appendChild(renderer.domElement);
+  const fallback=host.querySelector(".cup-fallback");if(fallback)fallback.style.opacity="0";
+  scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(34,host.clientWidth/host.clientHeight,.1,100);camera.position.set(0,0,8);
+  scene.add(new THREE.AmbientLight(0xffd8b2,1.25));
+  const key=new THREE.DirectionalLight(0xffc18b,3.2);key.position.set(-4,5,6);scene.add(key);
+  const fill=new THREE.PointLight(0x8e9aaf,2.1);fill.position.set(4,1,4);scene.add(fill);
+  const rim=new THREE.PointLight(0xd9824b,3);rim.position.set(0,3,-4);scene.add(rim);
+  const ceramic=new THREE.MeshPhysicalMaterial({color:0xe8dfd2,roughness:.22,metalness:.04,clearcoat:.85,clearcoatRoughness:.14});
+  const dark=new THREE.MeshPhysicalMaterial({color:0x2a1912,roughness:.28,metalness:.1});
+  const coffee=new THREE.MeshPhysicalMaterial({color:0x3b1c0d,roughness:.18,metalness:.05});
+  cup=new THREE.Group();scene.add(cup);
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(.92, .72, 1.5, 96,1,true),ceramic);body.position.y=-.1;cup.add(body);
+  const bottom=new THREE.Mesh(new THREE.CylinderGeometry(.72,.72,.12,96),ceramic);bottom.position.y=-.85;cup.add(bottom);
+  const rimMesh=new THREE.Mesh(new THREE.TorusGeometry(.91,.075,18,100),ceramic);rimMesh.rotation.x=Math.PI/2;rimMesh.position.y=.65;cup.add(rimMesh);
+  const liquid=new THREE.Mesh(new THREE.CircleGeometry(.84,96),coffee);liquid.rotation.x=-Math.PI/2;liquid.position.y=.59;cup.add(liquid);
+  const handle=new THREE.Mesh(new THREE.TorusGeometry(.43,.13,24,80,Math.PI*1.75),ceramic);handle.rotation.z=-Math.PI/2;handle.position.set(1.03,.05,0);cup.add(handle);
+  const saucer=new THREE.Mesh(new THREE.CylinderGeometry(1.32,1.22,.12,96),ceramic);saucer.position.y=-1.02;cup.add(saucer);
+  const saucerLip=new THREE.Mesh(new THREE.TorusGeometry(1.22,.045,14,100),ceramic);saucerLip.rotation.x=Math.PI/2;saucerLip.position.y=-.95;cup.add(saucerLip);
+  const steamMat=new THREE.MeshBasicMaterial({color:0xe8cbb2,transparent:true,opacity:.25});
+  for(let i=0;i<3;i++){const steam=new THREE.Mesh(new THREE.TorusGeometry(.16,.018,8,40),steamMat);steam.position.set((i-1)*.25,1.05,0);steam.rotation.x=Math.PI/2;steam.scale.set(.7,1.8,1);cup.add(steam)}
+  cup.rotation.set(-.08,-.38,-.08);cup.position.set(.3,-.05,0);cup.scale.setScalar(1.08);
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.2,64),new THREE.MeshBasicMaterial({color:0x21160f,transparent:true,opacity:.55}));floor.rotation.x=-Math.PI/2;floor.position.y=-1.1;floor.scale.set(1.25,.55,1);cup.add(floor);
+  const pointer={x:0,y:0};window.addEventListener('pointermove',e=>{pointer.x=(e.clientX/innerWidth-.5)*.16;pointer.y=(e.clientY/innerHeight-.5)*.12},{passive:true});
+  const resize=()=>{if(!renderer)return;const w=host.clientWidth,h=host.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)};window.addEventListener('resize',resize);
+  const tick=()=>{if(!alive)return;const t=performance.now()*.001;if(!reduced){cup.rotation.y=-.38+Math.sin(t*.42)*.08+pointer.x;cup.rotation.x=-.08+Math.sin(t*.55)*.025+pointer.y;cup.position.y=-.05+Math.sin(t*.8)*.045;}renderer.render(scene,camera);raf=requestAnimationFrame(tick)};tick();
+  if(window.gsap&&window.ScrollTrigger&&!reduced){gsap.registerPlugin(ScrollTrigger);gsap.to(cup.position,{x:-.9,y:-.22,scrollTrigger:{trigger:'.story',start:'top bottom',end:'bottom top',scrub:1}});gsap.to(cup.rotation,{z:.22,scrollTrigger:{trigger:'.story',start:'top bottom',end:'bottom top',scrub:1}})}
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf)}else if(alive)tick()});
+ }catch(e){
+  const fallback=host.querySelector(".cup-fallback");if(fallback)fallback.style.opacity="1";
+  host.style.background='radial-gradient(ellipse,#70452e,#211811 68%)';
+}
+ window.addEventListener('pagehide',()=>{alive=false;cancelAnimationFrame(raf);if(renderer)renderer.dispose()});
+})();
+</script>
+</body></html>
